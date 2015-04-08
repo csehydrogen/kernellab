@@ -110,6 +110,7 @@ int main(){
         pid = get_currpid();
         name = get_currname();
         add_item(pid, name);
+        if(pid == 0) break;
     }while(move_parent() != FAIL);
 
     while(list_size){
@@ -119,7 +120,6 @@ int main(){
         if(iter){
             printf("\\-");
             indent += 2;
-            iter ++;
         }
 
         pid = item_pid();
@@ -127,6 +127,7 @@ int main(){
 
         printf("%s(%d)\n", name, pid);
         pop_item();
+        iter ++;
     }
 
     return 0;
