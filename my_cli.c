@@ -1,4 +1,4 @@
-//#include"my_dev.h"
+#include"my_dev.h"
 #include<stdio.h>
 #include<sys/ioctl.h>
 #include<stdlib.h>
