@@ -1,1 +1,1 @@
-![alt tag](http://www.snu.ac.kr/webdata/boards/enmedia/65da03fbe822bf23d07dbf313349e4cd.jpg = 916x450)
+<img src="http://www.snu.ac.kr/webdata/boards/enmedia/65da03fbe822bf23d07dbf313349e4cd.jpg" width="916" height="450"  align = "center"/>
