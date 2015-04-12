@@ -22,5 +22,17 @@
 
 #define PERFEVTSEL 0x186
 #define PERFCTR 0xc1
+#define ENABLE_BIT 22
+
+struct MsrInOut {
+    unsigned int ecx;             // msr identifier
+    union {
+        struct {
+            unsigned int eax;     // low double word
+            unsigned int edx;     // high double word
+        };
+        unsigned long long value; // quad word
+    };
+};
 
 #endif

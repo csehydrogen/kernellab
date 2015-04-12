@@ -29,9 +29,27 @@ static int device_release(struct inode *inode, struct file *file){
     return SUCCESS;
 }
 
+static void write_msr(struct MsrInOut* msrInOut){
+    __asm__ __volatile__("wrmsr" :: "c"(msrInOut->ecx), "a"(msrInOut->eax), "d"(msrInOut->edx));
+}
+
+static struct MsrInOut read_msr(unsigned int ecx){
+    struct MsrInOut ret;
+    __asm__ __volatile__("rdmsr" : "=a"(ret.eax), "=d"(ret.edx) : "c"(ecx));
+    return ret;
+}
+
+static struct MsrInOut read_tsc(void){
+    struct MsrInOut ret;
+    __asm__ __volatile__("rdtsc" : "=a"(ret.eax), "=d"(ret.edx));
+    return ret;
+}
+
 long device_ioctl(struct file *file, unsigned int ioctl_num, unsigned long ioctl_param){
     static size_t buf_len = 0;
     static struct task_struct *task = NULL;
+    static struct MsrInOut msrInOut;
+    static unsigned long long event_code = 0, ret_val = 0;
     int i;
     
     switch(ioctl_num){
@@ -62,6 +80,37 @@ long device_ioctl(struct file *file, unsigned int ioctl_num, unsigned long ioctl
         case IOCTL_MOVE_TO_CURRENT:
             task = current;
             return SUCCESS;
+
+        // Assignment 2
+        case IOCTL_SELECT_PMU:
+            msrInOut.ecx = PERFEVTSEL; // target
+            msrInOut.value = ioctl_param; // value
+            write_msr(&msrInOut);
+            return SUCCESS;
+
+        case IOCTL_READ_PMU:
+            // fetch current event code
+            msrInOut = read_msr(PERFEVTSEL);
+            event_code = msrInOut.value;
+            
+            // stop counter
+            msrInOut.ecx = PERFEVTSEL;
+            msrInOut.value = 0;
+            write_msr(&msrInOut);
+
+            // read counter
+            msrInOut = read_msr(PERFCTR);
+            ret_val = msrInOut.value;
+
+            // restart counter w/ recent event code
+            msrInOut.ecx = PERFEVTSEL;
+            msrInOut.value = event_code;
+            write_msr(&msrInOut);
+            return ret_val;
+
+        case IOCTL_READ_TSC:
+            msrInOut = read_tsc();
+            return msrInOut.value;
     }
     return SUCCESS; // never reach here
 }
