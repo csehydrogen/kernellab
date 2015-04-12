@@ -1,1 +1,1 @@
-![alt tag](http://www.snu.ac.kr/webdata/boards/enmedia/65da03fbe822bf23d07dbf313349e4cd.jpg)
+![alt tag](http://www.snu.ac.kr/webdata/boards/enmedia/65da03fbe822bf23d07dbf313349e4cd.jpg = 916x450)
