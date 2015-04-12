@@ -35,6 +35,7 @@ long device_ioctl(struct file *file, unsigned int ioctl_num, unsigned long ioctl
     int i;
     
     switch(ioctl_num){
+        // Assignment 1
         case IOCTL_SET_BUFFER_LENGTH:
             buf_len = ioctl_param;
             return SUCCESS;

@@ -13,7 +13,14 @@
 #define IOCTL_MOVE_TO_PARENT    _IOR(MAJOR_NUM, 3, char *)
 #define IOCTL_MOVE_TO_CURRENT   _IOR(MAJOR_NUM, 4, char *)
 
+#define IOCTL_SELECT_PMU _IOR(MAJOR_NUM, 5, char *)
+#define IOCTL_READ_PMU _IOR(MAJOR_NUM, 6, char *)
+#define IOCTL_READ_TSC _IOR(MAJOR_NUM, 7, char *)
+
 #define DEVICE_NAME "my_dev"
 #define DEVICE_FILE_NAME "/dev/my_dev"
+
+#define PERFEVTSEL 0x186
+#define PERFCTR 0xc1
 
 #endif
