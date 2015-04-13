@@ -84,27 +84,30 @@ long device_ioctl(struct file *file, unsigned int ioctl_num, unsigned long ioctl
         // Assignment 2
         case IOCTL_SELECT_PMU:
             msrInOut.ecx = PERFEVTSEL; // target
-            msrInOut.value = ioctl_param; // value
+            msrInOut.edx = 0;
+            msrInOut.eax = ioctl_param; // value
             write_msr(&msrInOut);
             return SUCCESS;
 
         case IOCTL_READ_PMU:
             // fetch current event code
             msrInOut = read_msr(PERFEVTSEL);
-            event_code = msrInOut.value;
+            event_code = msrInOut.eax;
             
             // stop counter
             msrInOut.ecx = PERFEVTSEL;
-            msrInOut.value = 0;
+            msrInOut.edx = 0;
+            msrInOut.eax = event_code & (~(1<<ENABLE_BIT));
             write_msr(&msrInOut);
 
             // read counter
             msrInOut = read_msr(PERFCTR);
-            ret_val = msrInOut.value;
+            ret_val = msrInOut.eax;
 
             // restart counter w/ recent event code
             msrInOut.ecx = PERFEVTSEL;
-            msrInOut.value = event_code;
+            msrInOut.edx = 0;
+            msrInOut.eax = event_code;
             write_msr(&msrInOut);
             return ret_val;
 
