@@ -30,11 +30,13 @@ static int device_release(struct inode *inode, struct file *file){
 }
 
 static void write_msr(struct MsrInOut* msrInOut){
+    printk(KERN_INFO "wrmsr: ecx=%x, edx=%x, eax=%x\n", msrInOut->ecx, msrInOut->edx, msrInOut->eax);
     __asm__ __volatile__("wrmsr" :: "c"(msrInOut->ecx), "a"(msrInOut->eax), "d"(msrInOut->edx));
 }
 
 static struct MsrInOut read_msr(unsigned int ecx){
     struct MsrInOut ret;
+    printk(KERN_INFO "rdmsr: ecx=%x\n", ecx);
     __asm__ __volatile__("rdmsr" : "=a"(ret.eax), "=d"(ret.edx) : "c"(ecx));
     return ret;
 }
@@ -85,8 +87,17 @@ long device_ioctl(struct file *file, unsigned int ioctl_num, unsigned long ioctl
         case IOCTL_SELECT_PMU:
             msrInOut.ecx = PERFEVTSEL; // target
             msrInOut.edx = 0;
+            msrInOut.eax = 0;
+            write_msr(&msrInOut);
+
             msrInOut.eax = ioctl_param; // value
             write_msr(&msrInOut);
+
+            msrInOut.ecx = PERFCTR;
+            msrInOut.edx = 0;
+            msrInOut.eax = 0;
+            write_msr(&msrInOut);
+
             return SUCCESS;
 
         case IOCTL_READ_PMU:
@@ -97,7 +108,7 @@ long device_ioctl(struct file *file, unsigned int ioctl_num, unsigned long ioctl
             // stop counter
             msrInOut.ecx = PERFEVTSEL;
             msrInOut.edx = 0;
-            msrInOut.eax = event_code & (~(1<<ENABLE_BIT));
+            msrInOut.eax = 0;
             write_msr(&msrInOut);
 
             // read counter
