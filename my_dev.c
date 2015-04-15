@@ -106,8 +106,7 @@ long device_ioctl(struct file *file, unsigned int ioctl_num, unsigned long ioctl
 
         case IOCTL_SELECT_PMU_EVT:
             // program performance select register
-            // and stop counter by setting enable bit to 0
-            set_msr(&msrInOut, PERFEVTSEL, ioctl_param & ~ENABLE_FLG);
+            set_msr(&msrInOut, PERFEVTSEL, ioctl_param);
             write_msr(&msrInOut);
             return SUCCESS;
 
