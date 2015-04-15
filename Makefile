@@ -7,6 +7,12 @@ all:
 	gcc -o my_cli my_cli.c
 	gcc -g -o my_msr_cli my_msr_cli.c
 
+run1:
+	./my_cli
+
+run2:
+	./my_msr_cli
+
 clean:
 	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) clean
 	sudo rmmod my_dev
